@@ -1,0 +1,6 @@
+{
+  "required": true,
+  "package": "dev.klxsh.speakersinheads.mixin",
+  "client": ["SoundManagerAccessor", "SoundEngineAccessor", "ChannelHandleAccessor", "GroupChannelMixin", "SprEnvironmentMixin"],
+  "injectors": { "defaultRequire": 1 }
+}

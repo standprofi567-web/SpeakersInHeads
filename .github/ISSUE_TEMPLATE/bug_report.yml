@@ -1,0 +1,22 @@
+name: Bug report / Ошибка
+description: Report a reproducible problem in SpeakersInHeads.
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions / Версии
+      description: SpeakersInHeads, Minecraft, Fabric Loader, Fabric API, Java and SPR if used.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction / Как воспроизвести
+      description: Include the steps, expected behavior and actual behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs / Логи без личных данных
+      description: Include relevant client log lines and their timestamps. Remove credentials, private addresses and account data.

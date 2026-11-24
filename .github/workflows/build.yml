@@ -1,0 +1,30 @@
+name: Build and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      SIH_OPENAL_LOOPBACK: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Build and test against Fabric Loader 0.20.1
+        run: ./gradlew.bat --no-daemon clean build compileGametestJava '-Ploader_version=0.20.1' '-PclientGameTests'
+      - name: Verify archives
+        shell: pwsh
+        run: ./tools/Verify-Build.ps1

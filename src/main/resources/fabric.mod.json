@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "speakersinheads",
+  "version": "${version}",
+  "name": "SpeakersInHeads",
+  "description": "Spatial music and synchronized speaker groups for Minecraft Fabric.",
+  "authors": ["SpeakersInHeads contributors"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.klxsh.speakersinheads.SpeakersInHeadsClient"]
+  },
+  "mixins": ["speakersinheads.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

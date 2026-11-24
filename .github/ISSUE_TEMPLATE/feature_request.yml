@@ -1,0 +1,10 @@
+name: Feature request / Предложение
+description: Suggest an improvement to SpeakersInHeads.
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case / Сценарий
+      description: Describe what you want to do in game, what limits it today, and what change would help.
+    validations:
+      required: true

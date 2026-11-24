@@ -1,0 +1,90 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {}
+
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        "speakersinheads" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+sourceSets.test {
+    compileClasspath += sourceSets.client.output
+    runtimeClasspath += sourceSets.client.output + sourceSets.client.runtimeClasspath
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    clientImplementation "dev.mccue:mp3spi:${project.mp3_decoder_version}"
+    include "dev.mccue:mp3spi:${project.mp3_decoder_version}"
+    // Fabric's jar-in-jar metadata does not automatically nest transitive dependencies.
+    include "dev.mccue:jlayer-decoder:${project.mp3_decoder_version}"
+    include "dev.mccue:tritonus-share:${project.mp3_decoder_version}"
+
+    testImplementation platform('org.junit:junit-bom:5.13.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 25
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+    withSourcesJar()
+}
+
+jar {
+    from('LICENSE') {
+        rename { "${it}_${project.base.archivesName.get()}" }
+    }
+    from('docs/licenses/LGPL-2.1.txt') {
+        into 'META-INF/licenses'
+    }
+    from('THIRD_PARTY_NOTICES.md') {
+        into 'META-INF'
+    }
+}
+
+// Keeps the interactive client integration tests separate from the ordinary Gradle build.
+if (providers.gradleProperty('clientGameTests').isPresent()) {
+    fabricApi.configureTests {
+        createSourceSet = true
+        enableGameTests = false
+        enableClientGameTests = true
+        clearRunDirectory = false
+        modId = 'sih_client_smoke'
+    }
+    loom.runs.named('clientGameTest') {
+        runDir '.gradle/sih-client-game-test'
+        vmArg '-Dsih.groupDiagnostics=true'
+    }
+}
